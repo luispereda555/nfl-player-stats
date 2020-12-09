@@ -70,8 +70,9 @@ class Scraper():
                 except (KeyboardInterrupt, SystemExit):
                     raise
                 except:
-                    print('There was a problem parsing stats for {}'.format(player_profile_url))
-                    continue
+                    raise
+                    # print('There was a problem parsing stats for {}'.format(player_profile_url))
+                    # continue
                 self.save_player_profile(player.profile)
                 self.save_player_game_stats(player.game_stats, player.player_id, player.profile['name'])
                 player_id += 1
@@ -584,7 +585,7 @@ class Player():
 
 
 if __name__ == '__main__':
-    letters_to_scrape = list(string.ascii_uppercase)
-    nfl_scraper = Scraper(letters_to_scrape=letters_to_scrape, num_jobs=10, clear_old_data=False)
+    # letters_to_scrape = list(string.ascii_uppercase)
+    # nfl_scraper = Scraper(letters_to_scrape=letters_to_scrape, num_jobs=10, clear_old_data=False)
 
-    nfl_scraper.scrape_site()
+    # nfl_scraper.scrape_site()
