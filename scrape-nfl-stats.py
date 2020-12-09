@@ -70,8 +70,9 @@ class Scraper():
                 except (KeyboardInterrupt, SystemExit):
                     raise
                 except:
-                    raise
-                    # print('There was a problem parsing stats for {}'.format(player_profile_url))
+                    # raise
+                    print('There was a problem parsing stats for {}'.format(player_profile_url))
+                    break
                     # continue
                 self.save_player_profile(player.profile)
                 self.save_player_game_stats(player.game_stats, player.player_id, player.profile['name'])
@@ -227,6 +228,7 @@ class Player():
 
     def scrape_profile(self):
         """Scrape profile info for player"""
+        print(f"scraping profile_url: {self.profile_url}")
         response = self.scraper.get_page(self.profile_url)
         soup = BeautifulSoup(response.content, 'html.parser')
 
@@ -303,6 +305,7 @@ class Player():
 
     def scrape_player_stats(self):
         """Scrape the stats for all available games for a player"""
+        print(f"seasons_with_stats: {self.seasons_with_stats}")
         for season in self.seasons_with_stats:
             if season['year'] == 'Career' or season['year'] == 'Postseason':
                 continue
@@ -575,12 +578,21 @@ class Player():
         """
         seasons = []
         gamelog_list = profile_soup.find('div', {'id': 'inner_nav'}).find_all('li')[1].find_all('li')
+        # print(profile_soup)
+        print(f"gamelog list: {gamelog_list}")
         if len(gamelog_list) > 0 and gamelog_list[0].contents[0].contents[0] == 'Career':
             for season in gamelog_list:
+                if season.contents[0].contents[0] == 'Player Game Finder':
+                    # skip the player game finder
+                    continue
+                # print(season.contents[0].contents[0])
+                print(f"season: {season}")
+                # print(BASE_URL.format(season.contents[0]['href']))
                 seasons.append({
                     'year': season.contents[0].contents[0],
                     'gamelog_url': BASE_URL.format(season.contents[0]['href'])
                 })
+        print(f"seasons: {seasons}")
         return seasons
 
 
