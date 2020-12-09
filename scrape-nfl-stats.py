@@ -234,7 +234,7 @@ class Player():
 
         profile_section = soup.find('div', {'id': 'meta'})
         self.profile['name'] = profile_section.find('h1', {'itemprop': 'name'}).contents[0]
-        print('scaping {}'.format(self.profile['name']))
+        print('scraping {}'.format(self.profile['name']))
 
         profile_attributes = profile_section.find_all('p')
         current_attribute = 1
