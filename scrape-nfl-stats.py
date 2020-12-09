@@ -233,7 +233,7 @@ class Player():
         soup = BeautifulSoup(response.content, 'html.parser')
 
         profile_section = soup.find('div', {'id': 'meta'})
-        self.profile['name'] = profile_section.find('h1', {'itemprop': 'name'}).contents[0]
+        self.profile['name'] = profile_section.find('h1', {'itemprop': 'name'}).contents[1].contents[0]
         print('scraping {}'.format(self.profile['name']))
 
         profile_attributes = profile_section.find_all('p')
