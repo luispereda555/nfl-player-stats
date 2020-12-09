@@ -82,13 +82,15 @@ class Scraper():
     def condense_data(self):
         """Condense data into two files, a profile file and a stats file"""
         print('Condensing Data...')
+        # current_time = time.strftime('%y-%m-%d')
+        current_time = time.time()
         condensed_profile_data = []
         all_profile_files = glob.glob('{}/*.json'.format(PROFILE_DIR))
         for file in all_profile_files:
             with open(file, 'rb') as fin:
                 condensed_profile_data.append(json.load(fin))
         print('{} player profiles condensed'.format(len(condensed_profile_data)))
-        filename = 'profiles_{}.json'.format(time.time())
+        filename = 'profiles_{}.json'.format(current_time)
         with open(filename, 'w') as fout:
             json.dump(condensed_profile_data, fout)
 
@@ -98,7 +100,7 @@ class Scraper():
             with open(file, 'rb') as fin:
                 condensed_game_data += json.load(fin)
         print('{} player seasons condensed'.format(len(condensed_game_data)))
-        filename = 'games_{}.json'.format(time.time())
+        filename = 'games_{}.json'.format(current_time)
         with open(filename, 'w') as fout:
             json.dump(condensed_game_data, fout)
 
@@ -305,7 +307,6 @@ class Player():
 
     def scrape_player_stats(self):
         """Scrape the stats for all available games for a player"""
-        print(f"seasons_with_stats: {self.seasons_with_stats}")
         for season in self.seasons_with_stats:
             if season['year'] == 'Career' or season['year'] == 'Postseason':
                 continue
@@ -578,26 +579,20 @@ class Player():
         """
         seasons = []
         gamelog_list = profile_soup.find('div', {'id': 'inner_nav'}).find_all('li')[1].find_all('li')
-        # print(profile_soup)
-        print(f"gamelog list: {gamelog_list}")
         if len(gamelog_list) > 0 and gamelog_list[0].contents[0].contents[0] == 'Career':
             for season in gamelog_list:
                 if season.contents[0].contents[0] == 'Player Game Finder':
                     # skip the player game finder
                     continue
-                # print(season.contents[0].contents[0])
-                print(f"season: {season}")
-                # print(BASE_URL.format(season.contents[0]['href']))
                 seasons.append({
                     'year': season.contents[0].contents[0],
                     'gamelog_url': BASE_URL.format(season.contents[0]['href'])
                 })
-        print(f"seasons: {seasons}")
         return seasons
 
 
 if __name__ == '__main__':
-    # letters_to_scrape = list(string.ascii_uppercase)
-    # nfl_scraper = Scraper(letters_to_scrape=letters_to_scrape, num_jobs=10, clear_old_data=False)
+    letters_to_scrape = list(string.ascii_uppercase)
+    nfl_scraper = Scraper(letters_to_scrape=letters_to_scrape, num_jobs=10, clear_old_data=False)
 
-    # nfl_scraper.scrape_site()
+    nfl_scraper.scrape_site()
